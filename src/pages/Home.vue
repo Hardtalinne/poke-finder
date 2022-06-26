@@ -2,10 +2,12 @@
 import ItemList from '@/components/ItemList.vue'
 import SearchField from '@/components/SearchField.vue'
 import { useRouter } from 'vue-router'
+import OrderButton from '../components/OrderButton.vue'
 
 /* The home page handles the root search field value,
  * passing it to both `SearchField` and `ItemList` components. */
 let searchValue = $ref('')
+let orderValue = $ref('')
 
 function emptySearchValue() {
   searchValue = ''
@@ -28,11 +30,13 @@ function openItemDetails(url) {
     class="flex justify-center items-center p-6 lg:p-8 bg-gray-200 border-b border-gray-300"
   >
     <SearchField v-model="searchValue" class="w-full max-w-md" />
+    <OrderButton v-model="orderValue" class="w-full max-w-md" />
   </section>
 
   <section class="w-full max-w-screen-xl m-auto p-6 lg:p-8">
     <ItemList
       :search="searchValue"
+      :order="orderValue"
       @clear-search="emptySearchValue"
       @item-clicked="openItemDetails"
     />

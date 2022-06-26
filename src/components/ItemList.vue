@@ -6,7 +6,7 @@ import { capitalize, padZeros, removeCharacter } from '@/helpers/filters'
 import { promiseTimeout, useFetch, useTitle } from '@vueuse/core'
 import { onMounted, watchEffect } from 'vue'
 
-const props = defineProps({ search: String })
+const props = defineProps({ search: String, order: String })
 const emit = defineEmits(['clear-search', 'item-clicked'])
 
 // Starting reactive object to handle the state of the API fetch.
@@ -29,13 +29,25 @@ const items = $computed(() => {
   }))
 })
 
+const order = {
+  crescent: (a, b) => a.id - b.id,
+  decrescent: (a, b) => b.id - a.id,
+  name: (a, b) => a.name.localeCompare(b.name)
+}
+
 // Computed list of API results filtered by search text.
 const filteredItems = $computed(() => {
-  return items.filter(
+  const itemsFiltered = items.filter(
     (item) =>
       item.name.indexOf(props.search.toLowerCase()) > -1 ||
       item.id === Number(props.search)
   )
+
+  if (props.order) {
+    itemsFiltered.sort(order[props.order])
+  }
+
+  return itemsFiltered
 })
 
 // Computed message with count of items found after a search.
